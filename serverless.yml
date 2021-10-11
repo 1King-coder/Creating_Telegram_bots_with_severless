@@ -1,0 +1,15 @@
+service: creating-telegram-testing-bot-kingcoder
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: sa-east-1
+
+functions:
+  bot:
+    handler: bot.lambda_handler
+    events:
+      - http: POST /
+
+plugins:
+  - serverless-python-requirements
