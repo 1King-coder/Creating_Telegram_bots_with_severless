@@ -7,7 +7,7 @@ provider:
 
 functions:
   bot:
-    handler: bot.lambda_handler
+    handler: createBot().lambda_handler
     events:
       - http: POST /
 

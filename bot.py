@@ -3,17 +3,19 @@ from telegram import Update, Bot
 from telegram.ext import CommandHandler, Dispatcher, MessageHandler, Filters
 from modules.handlers import *
 
-def getToken(file_path):
-  token_file = open(file_path)
-  TOKEN = token_file.readline()
-  token_file.close()
+def getTextInFile(file_path):
+  file = open(file_path)
+  text = file.readline()
+  file.close()
 
-  return TOKEN
+  return text
+
 
 class GenBot:
-  def __init__(self, token):
+  def __init__(self, token, endpointUrl):
     self.bot = Bot(token)
     self.dispatcher = Dispatcher(self.bot, None, use_context=True)
+    self.url = endpointUrl
 
     self.build()
   
@@ -22,14 +24,22 @@ class GenBot:
     self.dispatcher.add_handler(MessageHandler(Filters.text & (~Filters.command), echo))
     self.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
+
   def lambda_handler(self, event, context):
     self.dispatcher.process_update(Update.de_json(json.loads(event['body']), self.bot))
     return { 'statusCode': 200 }
 
-def main():
-  TOKEN = getToken('./env/TestingBot/token.txt')
+def createBot():
+  TESTINGBOT_TOKEN = getTextInFile('./env/TestingBot/token.txt')
+  ENDPOINT_URL = getTextInFile('./env/endpointUrl.txt')
 
-  TestingBot = GenBot(TOKEN)
+  TestingBot = GenBot(TESTINGBOT_TOKEN, ENDPOINT_URL)
+
+  return TestingBot
+
+
+
+  
 
  
 
