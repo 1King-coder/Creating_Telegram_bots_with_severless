@@ -24,10 +24,14 @@ class TestingBot:
     self.build()
   
   def build(self):
+
     self.dispatcher.add_handler(CommandHandler("start", start))
-    self.dispatcher.add_handler(CommandHandler("fruta", fruta))
-    self.dispatcher.add_handler(MessageHandler(Filters.text & (~Filters.command), reverse_echo))
+    self.dispatcher.add_handler(CommandHandler("fruit", fruit))
+    self.dispatcher.add_handler(CommandHandler("echo", echo_type))
+    self.dispatcher.add_handler(MessageHandler(Filters.text & (~Filters.command), echo))
     self.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
+
+    self.bot.bot.send_message(chat_id=1594253213, text='Liguei!')
 
     self.bot.start_polling()
     self.bot.idle()

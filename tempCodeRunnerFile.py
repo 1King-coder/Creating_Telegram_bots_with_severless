@@ -1,0 +1,1 @@
+self.dictPer = DictPersistence(store_callback_data=True)
