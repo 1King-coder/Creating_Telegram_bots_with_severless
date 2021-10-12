@@ -1,7 +1,12 @@
 import json
+from requests import get
 from telegram import Update, Bot
-from telegram.ext import CommandHandler, Dispatcher, MessageHandler, Filters
+from telegram.ext import CommandHandler, Dispatcher, MessageHandler, Filters, Updater
 from modules.handlers import *
+import logging
+
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 def getTextInFile(file_path):
   file = open(file_path)
@@ -11,40 +16,31 @@ def getTextInFile(file_path):
   return text
 
 
-class GenBot:
-  def __init__(self, token, endpointUrl):
-    self.bot = Bot(token)
-    self.dispatcher = Dispatcher(self.bot, None, use_context=True)
-    self.url = endpointUrl
+class TestingBot:
+  def __init__(self, token):
+    self.bot = Updater(token=token)
+    self.dispatcher = self.bot.dispatcher
 
     self.build()
   
   def build(self):
     self.dispatcher.add_handler(CommandHandler("start", start))
-    self.dispatcher.add_handler(MessageHandler(Filters.text & (~Filters.command), echo))
+    self.dispatcher.add_handler(CommandHandler("fruta", fruta))
+    self.dispatcher.add_handler(MessageHandler(Filters.text & (~Filters.command), reverse_echo))
     self.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 
+    self.bot.start_polling()
+    self.bot.idle()
 
-  def lambda_handler(self, event, context):
-    self.dispatcher.process_update(Update.de_json(json.loads(event['body']), self.bot))
-    return { 'statusCode': 200 }
-
-def createBot():
+def main():
   TESTINGBOT_TOKEN = getTextInFile('./env/TestingBot/token.txt')
-  ENDPOINT_URL = getTextInFile('./env/endpointUrl.txt')
 
-  TestingBot = GenBot(TESTINGBOT_TOKEN, ENDPOINT_URL)
-
-  return TestingBot
-
-
-
-  
-
- 
+  TestingBot(TESTINGBOT_TOKEN)
 
 if __name__ == '__main__':
   main()
+
+  
 
   # threads = []
   # conn = threading.Thread(target=getBot, args=(TOKEN,))

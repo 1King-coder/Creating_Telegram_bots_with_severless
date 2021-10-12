@@ -1,22 +1,13 @@
-def get_chat_id (update):
-  return update.effective_chat.id
-
 def start (update, context):
-  context.bot.send_message(
-    chat_id=get_chat_id(update),
-    text="Hello! i am a test bot!"
-  )
+  update.message.reply_text('Hello!')
 
 def echo (update, context):
-  context.bot.send_message(
-    chat_id=get_chat_id(update),
-    text=update.message.text
-  )
+  update.message.reply_text(update.message.text)
 
 def reverse_echo (update, context):
   context.bot.send_message(
-    chat_id=get_chat_id(update),
-    text=update.message.text[::-1]
+    chat_id=update.effective_chat.id,
+    text='.'
   )
 
 def unknown (update, context):
